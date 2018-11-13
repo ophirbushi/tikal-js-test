@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { AgentData } from './agent-data';
 import { SAMPLE_DATA } from './sample-data';
 
+interface CountryAgentsDictionary {
+  [country: string]: string[];
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,7 +16,11 @@ export class AppComponent {
   readonly data: AgentData[] = SAMPLE_DATA;
   mostIsolatedCountry: string;
 
-  findMostIsolatedCountry(data: AgentData[]): string {
+  onFindIsolatedButtonClick() {
+    this.mostIsolatedCountry = this.findMostIsolatedCountry(this.data);
+  }
+
+  private findMostIsolatedCountry(data: AgentData[]): string {
     const agentsPerCountryDict = this.groupAgentsByCountry(data);
 
     return Object.keys(agentsPerCountryDict)
@@ -21,24 +29,21 @@ export class AppComponent {
       .map(p => p.country)[0];
   }
 
-  onFindIsolatedButtonClick() {
-    this.mostIsolatedCountry = this.findMostIsolatedCountry(this.data);
-  }
-
   private groupAgentsByCountry(data: AgentData[]): CountryAgentsDictionary {
-    return data.reduce<CountryAgentsDictionary>((dict, agentData) => {
-      const { country, agent } = agentData;
-      if (!dict[country]) {
-        dict[country] = [];
-      }
-      if (dict[country].indexOf(agent) === -1) {
-        dict[country].push(agent);
-      }
-      return dict;
-    }, {});
+    return data
+      .reduce<CountryAgentsDictionary>((dict, agentData) => {
+        const { country, agent } = agentData;
+
+        if (!dict[country]) {
+          dict[country] = [];
+        }
+
+        if (dict[country].indexOf(agent) === -1) {
+          dict[country].push(agent);
+        }
+
+        return dict;
+      }, {});
   }
 }
 
-interface CountryAgentsDictionary {
-  [country: string]: string[];
-}

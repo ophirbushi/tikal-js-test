@@ -1,6 +1,3 @@
-<button (click)="onFindIsolatedButtonClick()">
-  Find isolated
-</button>
-
-
-{{ mostIsolatedCountry }}
+<button (click)="onFindIsolatedButtonClick()">Find most isolated country</button>
+<div class="most-isolated-text" *ngIf="mostIsolatedCountry">Most isolated country is {{mostIsolatedCountry}}.</div>
+<app-agents-table [data]="data"></app-agents-table>

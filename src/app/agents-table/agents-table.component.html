@@ -1,0 +1,31 @@
+<table>
+  <thead>
+    <tr>
+      <th style="width: 13%">
+        <div>Agent ID</div>
+      </th>
+      <th style="width: 13%">
+        <div>Country</div>
+      </th>
+      <th style="width: 44%">
+        <div>Address</div>
+      </th>
+      <th style="width: 30%">
+        <div>Date</div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let agentData of data | sortByDateAscending">
+      <td>{{agentData.agent}}</td>
+      <td>{{agentData.country}}</td>
+      <td>{{agentData.address}}</td>
+      <td>{{agentData.date}}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="4">{{data.length}} missions</td>
+    </tr>
+  </tfoot>
+</table>
