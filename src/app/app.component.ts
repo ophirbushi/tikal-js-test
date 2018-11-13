@@ -13,25 +13,29 @@ export class AppComponent {
   mostIsolatedCountry: string;
 
   findMostIsolatedCountry(data: AgentData[]): string {
-    const groupsDictionary: CountryAgentsDictionary = {};
+    const agentsPerCountryDict = this.groupAgentsByCountry(data);
 
-    data.forEach(agentData => {
-      if (!groupsDictionary[agentData.country]) {
-        groupsDictionary[agentData.country] = [];
-      }
-      groupsDictionary[agentData.country].push(agentData.agent);
-    });
-
-    const sorted = Object.keys(groupsDictionary)
-      .map(key => ({ country: key, agentsCount: groupsDictionary[key].length }))
+    return Object.keys(agentsPerCountryDict)
+      .map(key => ({ country: key, agentsCount: agentsPerCountryDict[key].length }))
       .sort((a, b) => b.agentsCount - a.agentsCount)
-      .map(p => p.country);
-
-    return sorted[0];
+      .map(p => p.country)[0];
   }
 
   onFindIsolatedButtonClick() {
     this.mostIsolatedCountry = this.findMostIsolatedCountry(this.data);
+  }
+
+  private groupAgentsByCountry(data: AgentData[]): CountryAgentsDictionary {
+    return data.reduce<CountryAgentsDictionary>((dict, agentData) => {
+      const { country, agent } = agentData;
+      if (!dict[country]) {
+        dict[country] = [];
+      }
+      if (dict[country].indexOf(agent) === -1) {
+        dict[country].push(agent);
+      }
+      return dict;
+    }, {});
   }
 }
 
