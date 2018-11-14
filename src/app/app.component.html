@@ -1,3 +1,9 @@
 <button (click)="onFindIsolatedButtonClick()">Find most isolated country</button>
 <div class="most-isolated-text" *ngIf="mostIsolatedCountry">Most isolated country is {{mostIsolatedCountry}}.</div>
 <app-agents-table [data]="data"></app-agents-table>
+
+<button (click)="onFindDistancesButtonClick()">click</button>
+closest:
+{{closestToDowning}}
+
+furthest: {{furthestFromDowning}}
