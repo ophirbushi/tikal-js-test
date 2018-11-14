@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AgentData } from '../agent-data';
 
 @Component({
@@ -6,15 +6,10 @@ import { AgentData } from '../agent-data';
   templateUrl: './agents-table.component.html',
   styleUrls: ['./agents-table.component.scss']
 })
-export class AgentsTableComponent implements OnInit {
+export class AgentsTableComponent {
 
   @Input() data: AgentData[] = [];
   @Input() furthest: string;
   @Input() closest: string;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
 
 }

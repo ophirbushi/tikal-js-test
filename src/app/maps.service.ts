@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable, from, of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { getDistance } from 'geolib';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +18,6 @@ export class MapsService {
   }
 
   getCoordinates(address: string): Observable<Coordinates> {
-  //  return of({ longitude: Math.random(), latitude: Math.random() });
     return this.apiLoaded$
       .pipe(
         filter(loaded => loaded === true),
