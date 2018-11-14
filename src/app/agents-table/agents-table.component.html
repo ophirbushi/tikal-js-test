@@ -16,7 +16,8 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let agentData of data | sortByDateAscending">
+    <tr *ngFor="let agentData of data | sortByDateAscending" [class.furthest]="agentData.address === furthest"
+      [class.closest]="agentData.address === closest">
       <td>{{agentData.agent}}</td>
       <td>{{agentData.country}}</td>
       <td>{{agentData.address}}</td>

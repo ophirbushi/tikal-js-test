@@ -9,6 +9,8 @@ import { AgentData } from '../agent-data';
 export class AgentsTableComponent implements OnInit {
 
   @Input() data: AgentData[] = [];
+  @Input() furthest: string;
+  @Input() closest: string;
 
   constructor() { }
 

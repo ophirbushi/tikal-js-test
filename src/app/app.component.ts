@@ -3,8 +3,8 @@ import { AgentData } from './agent-data';
 import { SAMPLE_DATA } from './sample-data';
 
 import { MapsService, Coordinates } from './maps.service';
-import { forkJoin } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { delay, map, take } from 'rxjs/operators';
 
 interface CountryAgentsDictionary {
   [country: string]: string[];
@@ -19,8 +19,9 @@ export class AppComponent {
 
   readonly data: AgentData[] = SAMPLE_DATA;
   mostIsolatedCountry: string;
-  closestToDowning: string;
-  furthestFromDowning: string;
+  closest: string;
+  furthest: string;
+  loading = false;
 
   constructor(private mapsService: MapsService) { }
 
@@ -28,34 +29,46 @@ export class AppComponent {
     this.mostIsolatedCountry = this.findMostIsolatedCountry(this.data);
   }
 
-  onFindDistancesButtonClick() {
-    this.findDistancesFromDowning(this.data);
+  async onFindDistancesButtonClick() {
+    this.loading = true;
+    try {
+      const { closest, furthest } = await this.findDistancesFromDowning10(this.data).toPromise();
+      this.closest = closest;
+      this.furthest = furthest;
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      console.error(error);
+    }
   }
 
-  private findDistancesFromDowning(data: AgentData[]) {
-    forkJoin(
+  private findDistancesFromDowning10(data: AgentData[]): Observable<{ closest: string, furthest: string }> {
+    return forkJoin(
       this.mapsService.getCoordinates('10 Downing st. London').pipe(delay(100)),
       ...data.map(d => this.mapsService.getCoordinates(d.address).pipe(delay(100)))
     )
-      .subscribe((result: Array<Coordinates>) => {
-        const downing = result.shift();
-        const sorted = result
-          .map(
-            (c, index) => ({
+      .pipe(
+        map((result: Array<Coordinates>) => {
+          const downingCoords = result.shift();
+          const sorted = result
+            .map((coords, index) => ({
               address: data[index].address,
-              distance: this.mapsService.getDistanceBetweenCoordinates(downing, c)
-            })
-          )
-          .slice()
-          .sort((a, b) => a.distance - b.distance);
+              distance: this.mapsService.getDistanceBetweenCoordinates(downingCoords, coords)
+            }))
+            .slice()
+            .sort((a, b) => a.distance - b.distance);
 
-        if (!sorted.length) {
-          return;
-        }
+          if (!sorted.length) {
+            return { closest: null, furthest: null };
+          }
 
-        this.closestToDowning = sorted[0].address;
-        this.furthestFromDowning = sorted[sorted.length - 1].address;
-      });
+          return {
+            closest: sorted[0].address,
+            furthest: sorted[sorted.length - 1].address
+          };
+        }),
+        take(1)
+      );
   }
 
   private findMostIsolatedCountry(data: AgentData[]): string {

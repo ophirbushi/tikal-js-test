@@ -5,6 +5,14 @@ $lighter-border: #dddddd;
   display: table;
 }
 
+.furthest td {
+  color: red !important;
+}
+
+.closest td {
+  color: green !important;
+}
+
 table {
   width: 100%;
   border: 1px solid $darker-border;
