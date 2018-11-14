@@ -44,8 +44,8 @@ export class AppComponent {
 
   private findDistancesFromDowning10(data: AgentData[]): Observable<{ closest: string, furthest: string }> {
     return forkJoin(
-      this.mapsService.getCoordinates('10 Downing st. London').pipe(delay(100)),
-      ...data.map(d => this.mapsService.getCoordinates(d.address).pipe(delay(100)))
+      this.mapsService.getCoordinates('10 Downing st. London').pipe(delay(50)),
+      ...data.map(d => this.mapsService.getCoordinates(d.address).pipe(delay(50)))
     )
       .pipe(
         map((result: Array<Coordinates>) => {
